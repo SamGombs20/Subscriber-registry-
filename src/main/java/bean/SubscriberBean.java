@@ -4,11 +4,12 @@ import dao.SubscriberDAOImplementation;
 import model.Subscriber;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import java.util.List;
 
-
-@RequestScoped
+@ManagedBean
+@SessionScoped
 public class SubscriberBean {
     private SubscriberDAOImplementation daoImplementation;
     private List<Subscriber> subscribers;
@@ -17,5 +18,9 @@ public class SubscriberBean {
         daoImplementation = new SubscriberDAOImplementation();
         subscribers = daoImplementation.allSubscribers();
     }
+    public List<Subscriber> getSubscribers(){
+        return subscribers;
+    }
+
 
 }

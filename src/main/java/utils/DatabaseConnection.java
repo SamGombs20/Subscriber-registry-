@@ -14,6 +14,6 @@ public class DatabaseConnection {
             throw new SQLException("JDBC Driver not found",e);
 
         }
-        return DriverManager.getConnection(URL);
+        return DriverManager.getConnection(URL, "josh", "JSG@18cs");
     }
 }

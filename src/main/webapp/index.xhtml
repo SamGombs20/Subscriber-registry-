@@ -8,7 +8,40 @@
     </h:head>
     <h:body>
         <h3>MSpace Subscriber Registry</h3>
-<!--        <p:dataTable var="subscriber" value="#{subscriberBean.subscribers}"></p:dataTable>-->
+        <p:dataTable var="subscriber" value="#{subscriberBean.subscribers}">
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText>Subscriber No.</h:outputText>
+                </f:facet>
+                <f:facet>
+                    <h:outputText>#{subscriber.id}</h:outputText>
+                </f:facet>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText>Full Name</h:outputText>
+                </f:facet>
+                <f:facet>
+                    <h:outputText>#{subscriber.fullName}</h:outputText>
+                </f:facet>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText>Phone No.</h:outputText>
+                </f:facet>
+                <f:facet>
+                    <h:outputText>#{subscriber.phoneNumber}</h:outputText>
+                </f:facet>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText>Status</h:outputText>
+                </f:facet>
+                <f:facet>
+                    <h:outputText>#{subscriber.status}</h:outputText>
+                </f:facet>
+            </p:column>
+        </p:dataTable>
     </h:body>
 </f:view>
 </html>
