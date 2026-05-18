@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS mspace;
+
+USE mspace;
+
+CREATE TABLE IF NOT EXISTS subscribers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    status VARCHAR(10) NOT NULL
+);

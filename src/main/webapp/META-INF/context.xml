@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Context>
+    <Resource
+            name="jdbc/SubscriberDB"
+            auth="Container"
+            type="javax.sql.DataSource"
+            driverClassName="org.mariadb.jdbc.Driver"
+            url="jdbc:mariadb://localhost:3306/mspace"
+            username="josh"
+            password="JSG@18cs"
+            maxTotal="20"
+            maxIdle="10"
+            maxWaitMillis="10000"
+    />
+</Context>
