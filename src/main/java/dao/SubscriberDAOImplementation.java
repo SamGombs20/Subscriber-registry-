@@ -1,0 +1,85 @@
+package dao;
+
+import model.Subscriber;
+import utils.DatabaseConnection;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class SubscriberDAOImplementation implements SubscriberDao {
+
+    @Override
+    public void save(Subscriber subscriber) {
+        String sql ="INSERT INTO subscribers (full_name, phone_number, status) VALUES (?,?,?)";
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)){
+            stmt.setString(1,subscriber.getFullName());
+            stmt.setString(2,subscriber.getPhoneNumber());
+            stmt.setString(3, subscriber.getStatus());
+
+            stmt.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Subscriber> allSubscribers() {
+        List<Subscriber> subscribers = new ArrayList<>();
+        String query = "SELECT * FROM subscribers";
+        try(Connection conn= DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet result = stmt.executeQuery()) {
+            while (result.next()){
+                subscribers.add(mapRowToSubscriber(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return subscribers;
+    }
+
+    @Override
+    public void update(Subscriber subscriber) {
+        String query = "UPDATE subscribers SET full_name = ?, phone_number = ?, status = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1,subscriber.getFullName());
+            stmt.setString(2,subscriber.getPhoneNumber());
+            stmt.setString(3, subscriber.getPhoneNumber());
+            stmt.setInt(4,subscriber.getId());
+
+            stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String query = "DELETE FROM subscribers WHERE id = ?";
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
+    private Subscriber mapRowToSubscriber(ResultSet resultSet) throws SQLException{
+        Subscriber sub = new Subscriber();
+        sub.setId(resultSet.getInt("id"));
+        sub.setFullName(resultSet.getString("full_name"));
+        sub.setPhoneNumber(resultSet.getString("phone_number"));
+        sub.setStatus(resultSet.getString("status"));
+        return sub;
+    }
+}

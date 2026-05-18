@@ -11,6 +11,10 @@ public class Subscriber {
         return this.id;
     }
 
+    public void setId(final int id) {
+        this.id = id;
+    }
+
     public String getFullName() {
         return this.fullName;
     }
