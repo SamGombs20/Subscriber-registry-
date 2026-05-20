@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SubscriberDAOImplementation implements SubscriberDao {
@@ -23,7 +22,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
             stmt.setString(3, subscriber.getStatus());
 
             stmt.executeUpdate();
-        } catch (SQLException e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -38,7 +37,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
             while (result.next()){
                 subscribers.add(mapRowToSubscriber(result));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return subscribers;
@@ -56,7 +55,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
 
             stmt.executeUpdate();
         }
-        catch (SQLException e){
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -69,7 +68,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
             stmt.setInt(1,id);
             stmt.executeUpdate();
         }
-        catch (SQLException e){
+        catch (Exception e){
             e.printStackTrace();
         }
 
@@ -92,7 +91,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
                 }
             }
         }
-        catch (SQLException e){
+        catch (Exception e){
             e.printStackTrace();
         }
         return false;

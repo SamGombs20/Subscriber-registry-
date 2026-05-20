@@ -18,7 +18,7 @@ import java.util.List;
 @ViewScoped
 public class SubscriberBean implements Serializable {
 
-    private SubscriberDAOImplementation daoImplementation;
+    private transient SubscriberDAOImplementation daoImplementation;
     private List<Subscriber> subscribers;
     private Integer selectedSubId;
     private String fullName;

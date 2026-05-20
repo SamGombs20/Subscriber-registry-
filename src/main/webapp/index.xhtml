@@ -75,7 +75,7 @@
         <div class="main-container">
            <div class="title-container">
                <h:outputText value="All Subscribers" styleClass="ui-widget" style="font-size: 1.4rem;font-weight: 600; color: darkblue;"/>
-               <p:commandButton icon="pi pi-plus" update=":addForm" action="#{subscriberBean.newSubscriber()}" oncomplete="PF('addDialog').show();" styleClass="ui-button-outlined ui-button-info" value="Add subscriber" onclick="PF('addDialog').show();return false;"/>
+               <p:commandButton icon="pi pi-plus" update=":addForm" action="#{subscriberBean.newSubscriber()}" oncomplete="PF('addDialog').show();" styleClass="ui-button-outlined ui-button-info" value="Add subscriber"/>
            </div>
             <p:divider/>
             <h:form id="exporter-form">
@@ -116,7 +116,7 @@
             </h:form>
         </div>
         <h:form id="addForm">
-            <p:dialog onHide="#{subscriberBean.newSubscriber()}" header="#{subscriberBean.selectedSubId==null?'Add New Subscriber':'Edit Subscriber'}" widgetVar="addDialog" closable="true" modal="true" resizable="false" global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+            <p:dialog header="#{subscriberBean.selectedSubId==null?'Add New Subscriber':'Edit Subscriber'}" widgetVar="addDialog" closable="true" modal="true" resizable="false" global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
 <!--                <p:panelGrid columns="2" style="width: 100%; padding: 1rem">-->
 <!--                    -->
 <!--                </p:panelGrid>-->
