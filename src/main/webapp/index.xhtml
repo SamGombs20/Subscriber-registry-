@@ -1,47 +1,147 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="https://jakarta.ee/xml/ns/jakartaee"
-      xmlns:h="https://jakarta.ee/xml/ns/jakartaee" xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
 
-<f:view contentType="text/html;charset=UTF-8" encoding="UTF-8">
+<f:view contentType="text/html" encoding="UTF-8">
     <h:head>
+        <title>MSpace Subscriber Registry</title>
+        <style>
+            body{
+                margin: 0;
+            }
+            .header-card{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+            .header-card .img{
+                padding-top: 0.5rem;
+                width: 100px;
+                height: auto;
+                object-fit: contain;
+            }
 
+            .nav-title{
+                margin: 0;
+                font-size: 1.4rem;
+            }
+            .main-container{
+                margin-top: 2rem;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 1rem;
+            }
+            .action-btn-container{
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .title-container{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 3rem;
+            }
+            .btn{
+              align-items: center;
+                font-size: 0.8rem;
+            }
+            .form-btn-container{
+                display: flex;
+                justify-content: flex-end;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            .input-container{
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+        </style>
     </h:head>
     <h:body>
-        <h3>MSpace Subscriber Registry</h3>
-        <p:dataTable var="subscriber" value="#{subscriberBean.subscribers}">
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText>Subscriber No.</h:outputText>
-                </f:facet>
-                <f:facet>
-                    <h:outputText>#{subscriber.id}</h:outputText>
-                </f:facet>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText>Full Name</h:outputText>
-                </f:facet>
-                <f:facet>
-                    <h:outputText>#{subscriber.fullName}</h:outputText>
-                </f:facet>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText>Phone No.</h:outputText>
-                </f:facet>
-                <f:facet>
-                    <h:outputText>#{subscriber.phoneNumber}</h:outputText>
-                </f:facet>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText>Status</h:outputText>
-                </f:facet>
-                <f:facet>
-                    <h:outputText>#{subscriber.status}</h:outputText>
-                </f:facet>
-            </p:column>
-        </p:dataTable>
+        <p:card styleClass="header-card">
+            <f:facet name="header">
+                <h:graphicImage library="images" name="company_logo.jpeg" styleClass="img" alt="Company Logo" />
+
+            </f:facet>
+            <h4 class="nav-title">Subscriber Registry</h4>
+        </p:card>
+        <div class="main-container">
+           <div class="title-container">
+               <h:outputText value="All Subscribers" styleClass="ui-widget" style="font-size: 1.4rem;font-weight: 600; color: darkblue;"/>
+               <p:button icon="pi pi-plus" styleClass="ui-button-outlined ui-button-info" value="Add subscriber" onclick="PF('addDialog').show();return false;"/>
+           </div>
+            <p:divider/>
+            <h:form id="exporter-form">
+                <div class="action-btn-container" style="margin-bottom: 1rem;margin-top: 2rem">
+                    <p:commandButton ajax="false" value="Export PDF" icon="pi pi-file-pdf" styleClass="ui-button-danger rounded-button btn">
+                        <p:dataExporter fileName="MSpace_subscribers" type="pdf" target=":subscribers-form:subscriber-table"/>
+                    </p:commandButton>
+                    <p:commandButton ajax="false" value="Export XLS" icon="pi pi-file-excel" styleClass="ui-button-success rounded-button btn">
+                        <p:dataExporter fileName="MSpace_subscribers" type="xlsx" target=":subscribers-form:subscriber-table"/>
+                    </p:commandButton>
+                </div>
+            </h:form>
+            <h:form id="subscribers-form" enctype="application/x-www-form-urlencoded">
+                <p:dataTable id="subscriber-table" paginator="true" rows="10" var="subscriber" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             value="#{subscriberBean.subscribers}" currentPageReportTemplate="Showing {startRecord}-{endRecord} of {totalRecords}">
+
+                    <p:column headerText="Full Name">
+                        <h:outputText value="#{subscriber.fullName}"/>
+                    </p:column>
+                    <p:column headerText="Phone number">
+                        <h:outputText value="#{subscriber.phoneNumber}"/>
+                    </p:column>
+                    <p:column headerText="Status">
+                        <h:outputText value="#{subscriber.status}"/>
+                    </p:column>
+                    <p:column headerText="Actions" exportable="false">
+                        <div class="action-btn-container">
+                            <p:button icon="pi pi-user-edit" styleClass="rounded-button ui-button-info ui-button-flat"/>
+                            <p:commandButton icon="pi pi-trash" action="#{subscriberBean.deleteSubscriber(subscriber.id)}" styleClass="rounded-button ui-button-danger ui-button-flat"/>
+                        </div>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </div>
+        <h:form id="addForm">
+            <p:dialog header="Add New Subscriber" widgetVar="addDialog" closable="true" modal="true" resizable="false" width="400">
+<!--                <p:panelGrid columns="2" style="width: 100%; padding: 1rem">-->
+<!--                    -->
+<!--                </p:panelGrid>-->
+                <p:messages id="messages" showSummary="true"  closable="true"/>
+                <div class="input-container">
+                    <p:outputLabel for="fullName" value="Full Name"/>
+                    <p:inputText id="fullName" value="#{subscriberBean.fullName}" required="true" placeholder="Enter full name"
+                                 requiredMessage="Full name is required" style="width: 100%"/>
+                </div>
+                <div class="input-container">
+                    <p:outputLabel for="phoneNumber" value="Phone Number"/>
+                    <p:inputText id="phoneNumber" value="#{subscriberBean.phoneNumber}" required="true" placeholder="254XXXXXXXXX">
+                        <f:validateRegex pattern="254[0-9]{9}"/>
+                    </p:inputText>
+                </div>
+                <div class="input-container">
+                    <p:outputLabel for="status" value="Status"/>
+                    <p:selectOneMenu id="status"  value="#{subscriberBean.status}" required="true" requiredMessage="Status is required">
+                        <f:selectItem itemLabel="-- Select Status --" itemValue=""/>
+                        <f:selectItem itemValue="Active" itemLabel="Active"/>
+                        <f:selectItem itemValue="Inactive" itemLabel="Inactive"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="form-btn-container">
+                    <p:commandButton value="Save" process="@form" action="#{subscriberBean.addSubscriber()}" update="messages :subscribers-form:subscriber-table"
+                                     oncomplete="if(!args.validationFailed) PF('addDialog').hide();" styleClass="ui-button-success rounded-button btn"/>
+                    <p:commandButton ajax="false" value="Cancel" onclick="PF('addDialog').hide();return false" styleClass="ui-button-secondary rounded-button btn" />
+                </div>
+            </p:dialog>
+        </h:form>
     </h:body>
 </f:view>
 </html>
