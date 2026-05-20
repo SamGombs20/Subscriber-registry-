@@ -1,17 +1,17 @@
 package model;
 
 public class Subscriber {
-    private int id;
+    private Integer id;
     private String fullName;
     private String phoneNumber;
     private String status;
 
     public Subscriber(){}
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(final int id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 

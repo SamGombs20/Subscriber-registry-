@@ -20,9 +20,11 @@ public class SubscriberBean implements Serializable {
 
     private SubscriberDAOImplementation daoImplementation;
     private List<Subscriber> subscribers;
+    private Integer selectedSubId;
     private String fullName;
     private String phoneNumber;
     private String status;
+    private Integer idToDelete;
     @PostConstruct
     public void init(){
         daoImplementation=new SubscriberDAOImplementation();
@@ -34,7 +36,6 @@ public class SubscriberBean implements Serializable {
     public List<Subscriber> getSubscribers(){
         return subscribers;
     }
-
     public String getFullName() {
         return this.fullName;
     }
@@ -55,32 +56,74 @@ public class SubscriberBean implements Serializable {
         return this.status;
     }
 
+    public Integer getSelectedSubId() {
+        return this.selectedSubId;
+    }
+
+    public void setSelectedSubId(final Integer selectedSubId) {
+        this.selectedSubId = selectedSubId;
+    }
+
     public void setStatus(final String status) {
         this.status = status;
     }
-    public void validatePhone(FacesContext context, UIComponent component, Object value) throws ValidatorException{
-        String phone = (String) value;
-        if(phone==null|| !phone.startsWith("254")|| phone.length()!=12){
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid phone number","Must start with 254 and be exactly 12 digits");
-            throw new ValidatorException(msg);
+    public void validatePhone(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        String phone = (value != null) ? value.toString().trim() : "";
+        if (!phone.matches("^254[0-9]{9}$")) {
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Invalid Format", "Number must be 254XXXXXXXXX"));
+        }
+        if(daoImplementation.doesPhoneNumberExist(phone,selectedSubId)){
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Duplicate Found", "This phone number is already registered."));
         }
     }
+
     public void addSubscriber(){
         Subscriber newSub = new Subscriber();
 
         newSub.setFullName(fullName);
         newSub.setPhoneNumber(phoneNumber);
         newSub.setStatus(status);
-        daoImplementation.save(newSub);
+        if(selectedSubId!=null){
+            newSub.setId(selectedSubId);
+            daoImplementation.update(newSub);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Success", "Subscriber updated successfully!"));
+        }
+        else {
+            daoImplementation.save(newSub);
+            FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Success","Subscriber added successfully!"));
+        }
+
         loadSubscribers();
-        fullName=null;
-        status=null;
-        phoneNumber=null;
-        FacesContext.getCurrentInstance().addMessage(null,new FacesMessage(FacesMessage.SEVERITY_INFO,
-                "Success","Subscriber added successfully!"));
+        newSubscriber();
+
     }
-    public void deleteSubscriber(int id){
-        daoImplementation.delete(id);
-        loadSubscribers();
+
+    public void deleteSubscriber(){
+        if(idToDelete!=null){
+            daoImplementation.delete(idToDelete);
+            loadSubscribers();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Success", "Subscriber deleted successfully!"));
+            idToDelete=null;
+        }
+    }
+    public void editSubscriber(Subscriber sub){
+        selectedSubId = sub.getId();
+        fullName=sub.getFullName();
+        phoneNumber=sub.getPhoneNumber();
+        status=sub.getStatus();
+    }
+    public void newSubscriber(){
+        this.selectedSubId=null;
+        this.fullName=null;
+        this.status=null;
+        this.phoneNumber=null;
+    }
+    public void initiateSubDelete(Integer id){
+        idToDelete=id;
     }
 }

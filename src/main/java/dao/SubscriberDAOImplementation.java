@@ -51,7 +51,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
         PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1,subscriber.getFullName());
             stmt.setString(2,subscriber.getPhoneNumber());
-            stmt.setString(3, subscriber.getPhoneNumber());
+            stmt.setString(3, subscriber.getStatus());
             stmt.setInt(4,subscriber.getId());
 
             stmt.executeUpdate();
@@ -62,7 +62,7 @@ public class SubscriberDAOImplementation implements SubscriberDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Integer id) {
         String query = "DELETE FROM subscribers WHERE id = ?";
         try(Connection conn = DatabaseConnection.getConnection();
         PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -74,6 +74,30 @@ public class SubscriberDAOImplementation implements SubscriberDao {
         }
 
     }
+
+    @Override
+    public boolean doesPhoneNumberExist(String phoneNumber, Integer excludeId) {
+        String query = excludeId==null?"SELECT COUNT(*) FROM subscribers WHERE phone_number = ?":
+                "SELECT COUNT(*) FROM subscribers WHERE phone_number = ? AND id != ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, phoneNumber.trim());
+            if (excludeId!=null){
+                stmt.setInt(2,excludeId);
+            }
+            try(ResultSet resultSet = stmt.executeQuery()) {
+                if(resultSet.next()){
+                    return resultSet.getInt(1)>0;
+                }
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private Subscriber mapRowToSubscriber(ResultSet resultSet) throws SQLException{
         Subscriber sub = new Subscriber();
         sub.setId(resultSet.getInt("id"));

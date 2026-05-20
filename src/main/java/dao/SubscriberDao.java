@@ -8,5 +8,6 @@ public interface SubscriberDao {
     void save(Subscriber subscriber);
     List<Subscriber> allSubscribers();
     void update(Subscriber subscriber);
-    void delete(int id);
+    void delete(Integer id);
+    boolean doesPhoneNumberExist(String phoneNumber, Integer excludeId);
 }
